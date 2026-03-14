@@ -42,12 +42,12 @@ The system does not yet:
 
 Mock mode writes these files without calling any paid model:
 
-- `research_brief.md`
-- `content_ideas.md`
-- `content_drafts.md`
-- `weekly_app_launch_plan.md`
-- `candidate_learnings.md`
-- `mock_run_summary.md`
+- `output/research_brief.md`
+- `output/content_ideas.md`
+- `output/content_drafts.md`
+- `output/weekly_app_launch_plan.md`
+- `output/candidate_learnings.md`
+- `output/mock_run_summary.md`
 
 Use this mode to validate structure, prompts, content flow, and file outputs.
 
@@ -55,7 +55,7 @@ Use this mode to validate structure, prompts, content flow, and file outputs.
 
 Live mode runs the real 4-agent CrewAI workflow and writes:
 
-- `weekly_app_launch_plan.md`
+- `output/weekly_app_launch_plan.md`
 
 It requires a valid API key and provider quota.
 

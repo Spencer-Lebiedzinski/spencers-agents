@@ -74,7 +74,7 @@ class SocialMediaPlanner():
         return Task(
             config=self.tasks_config['planning_task'], # type: ignore[index]
             context=[self.trend_research_task(), self.idea_generation_task(), self.writing_task()],
-            output_file='weekly_app_launch_plan.md'
+            output_file='output/weekly_app_launch_plan.md'
         )
 
     @crew

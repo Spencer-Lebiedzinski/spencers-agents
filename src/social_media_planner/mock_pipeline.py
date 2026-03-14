@@ -2,6 +2,7 @@ from pathlib import Path
 
 
 def _write(output_dir: Path, filename: str, content: str) -> str:
+    output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / filename
     path.write_text(content.strip() + "\n", encoding="utf-8")
     return content.strip()

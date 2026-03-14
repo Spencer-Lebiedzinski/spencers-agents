@@ -9,7 +9,8 @@ from social_media_planner.mock_pipeline import run_mock_pipeline
 class MockPipelineTest(unittest.TestCase):
     def test_run_mock_pipeline_writes_expected_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
-            run_mock_pipeline(build_inputs(), Path(tmp_dir))
+            output_dir = Path(tmp_dir) / "output"
+            run_mock_pipeline(build_inputs(), output_dir)
 
             expected_files = {
                 "research_brief.md",
@@ -20,4 +21,4 @@ class MockPipelineTest(unittest.TestCase):
                 "mock_run_summary.md",
             }
 
-            self.assertEqual(expected_files, {path.name for path in Path(tmp_dir).iterdir()})
+            self.assertEqual(expected_files, {path.name for path in output_dir.iterdir()})

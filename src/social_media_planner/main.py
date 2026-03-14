@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_RESEARCH_PACKET = PROJECT_ROOT / "knowledge" / "app_launch_research_packet.md"
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "output"
 
 
 def get_run_mode() -> str:
@@ -72,10 +73,11 @@ def build_inputs() -> dict[str, str]:
 def run():
     """Run the workflow in live or mock mode."""
     inputs = build_inputs()
+    output_dir = DEFAULT_OUTPUT_DIR
 
     try:
         if get_run_mode() == "mock":
-            run_mock_pipeline(inputs, output_dir=Path.cwd())
+            run_mock_pipeline(inputs, output_dir=output_dir)
             return
         SocialMediaPlanner().crew().kickoff(inputs=inputs)
     except Exception as e:
@@ -148,7 +150,7 @@ def run_with_trigger():
 
     try:
         if get_run_mode() == "mock":
-            run_mock_pipeline(inputs, output_dir=Path.cwd())
+            run_mock_pipeline(inputs, output_dir=DEFAULT_OUTPUT_DIR)
             return None
         result = SocialMediaPlanner().crew().kickoff(inputs=inputs)
         return result
