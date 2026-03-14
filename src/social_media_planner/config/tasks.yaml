@@ -1,0 +1,56 @@
+trend_research_task:
+  description: >
+    Review the manual research packet for {app_name} and extract the most useful
+    signals for {platforms}. The target user is: {target_user}. The user problem is:
+    {user_problem}. The dream outcome is: {dream_outcome}. The launch stage is:
+    {launch_stage}. The CTA target is: {cta_target}. Use this weekly research packet
+    as your source material:
+
+    {research_packet}
+
+    Produce a practical research brief for the current year {current_year}.
+  expected_output: >
+    A markdown brief with these sections: audience pains, competitor patterns,
+    hook formulas, objections, content opportunities, and a ranked top 5 list
+    of launch opportunities for this week.
+  agent: research_agent
+
+idea_generation_task:
+  description: >
+    Use the research brief to generate at least {posts_per_week} content ideas
+    for {app_name}. The app one-liner is: {app_one_liner}. The core features are:
+    {core_features}. The proof points are: {proof_points}. The content pillars are:
+    {content_pillars}. Split the ideas across funnel stages:
+    1. awareness
+    2. consideration
+    3. proof
+    4. conversion
+  expected_output: >
+    A markdown list of at least {posts_per_week} ideas. Include at least 1 awareness
+    idea, 1 proof idea, and 1 conversion idea. For each idea include: funnel_stage,
+    title, platform, hook, angle, audience takeaway, CTA target, and suggested asset type.
+  agent: idea_agent
+
+writing_task:
+  description: >
+    Turn the proposed ideas into ready-to-edit faceless drafts for TikTok and Instagram.
+    Write in a {brand_voice} voice. Avoid generic startup hype. Make every draft
+    tie back to the user problem, the promised outcome, or the launch action:
+    {cta_target}.
+  expected_output: >
+    A markdown draft for each idea. For TikTok include hook, short talking script,
+    on-screen text, and CTA. For Instagram include caption, reel or carousel angle,
+    and CTA. Keep each draft concise and editable.
+  agent: writing_agent
+
+planning_task:
+  description: >
+    Organize the drafted content into a 1-week schedule for {app_name}.
+    Focus on {platforms}. Balance the content pillars: {content_pillars}.
+    Keep the schedule realistic for a faceless brand trying to build hype and drive
+    users toward {cta_target} before launch.
+  expected_output: >
+    A markdown weekly content calendar with 5 post slots. For each slot include:
+    day, platform, funnel stage, content pillar, post concept, asset type,
+    production note, publish note, and CTA target.
+  agent: planner_agent
