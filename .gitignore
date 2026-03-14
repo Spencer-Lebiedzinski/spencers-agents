@@ -1,3 +1,9 @@
 .env
 __pycache__/
 .DS_Store
+research_brief.md
+content_ideas.md
+content_drafts.md
+weekly_app_launch_plan.md
+candidate_learnings.md
+mock_run_summary.md
