@@ -10,6 +10,8 @@ class MainInputsTest(unittest.TestCase):
         self.assertEqual(inputs["app_name"], "SignalSprout")
         self.assertEqual(inputs["platforms"], "TikTok and Instagram")
         self.assertEqual(inputs["posts_per_week"], "5")
+        self.assertEqual(inputs["batch_size"], "25")
+        self.assertEqual(inputs["draft_batch_size"], "12")
         self.assertIn("prelaunch", inputs["launch_stage"])
         self.assertIn("waitlist", inputs["cta_target"])
         self.assertIn("Weekly App Launch Research Packet", inputs["research_packet"])

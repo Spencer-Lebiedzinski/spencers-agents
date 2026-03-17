@@ -8,6 +8,11 @@ def _write(output_dir: Path, filename: str, content: str) -> str:
     return content.strip()
 
 
+def _distribute_stages(batch_size: int) -> list[str]:
+    stages = ["awareness", "awareness", "consideration", "proof", "conversion"]
+    return [stages[index % len(stages)] for index in range(batch_size)]
+
+
 def build_mock_research(inputs: dict[str, str]) -> str:
     return f"""
 # Research Brief
@@ -44,94 +49,93 @@ def build_mock_research(inputs: dict[str, str]) -> str:
 
 def build_mock_ideas(inputs: dict[str, str]) -> str:
     cta = inputs["cta_target"]
-    return f"""
-# Content Ideas
+    batch_size = int(inputs["batch_size"])
+    stage_titles = {
+        "awareness": "Why Your System Keeps Breaking",
+        "consideration": "What A Better Tool Should Actually Do",
+        "proof": f"What {inputs['app_name']} Actually Helps You Do",
+        "conversion": "Join Before Launch",
+    }
+    stage_assets = {
+        "awareness": "b-roll + text",
+        "consideration": "carousel",
+        "proof": "faceless explainer",
+        "conversion": "faceless CTA reel",
+    }
+    stage_hooks = {
+        "awareness": "Most people do not have a motivation problem. They have a system problem.",
+        "consideration": "Most productivity tools make simple things feel heavy.",
+        "proof": "This is how we are turning goals into daily actions.",
+        "conversion": "If you want first access, now is the time.",
+    }
+    stage_angles = {
+        "awareness": "Explain why vague daily workflows kill consistency.",
+        "consideration": "Contrast bloated tools with a narrow app promise.",
+        "proof": "Reveal the product through outcomes instead of a feature dump.",
+        "conversion": "Push urgency around waitlist access and early use.",
+    }
+    stage_takeaways = {
+        "awareness": "Clear systems beat vague ambition.",
+        "consideration": "Simplicity is a competitive advantage.",
+        "proof": "The product is designed around daily execution.",
+        "conversion": "Early users get the earliest value.",
+    }
 
-1. funnel_stage: awareness
-title: Why Motivation Fails After 3 Days
-platform: TikTok
-hook: Most people do not have a motivation problem. They have a system problem.
-angle: Explain why goals die when the daily workflow is too vague.
-audience_takeaway: Clear systems beat vague ambition.
-cta_target: {cta}
-asset_type: b-roll + text
-
-2. funnel_stage: awareness
-title: Stop Using Bloated Productivity Tools
-platform: Instagram
-hook: Most productivity apps make simple things feel heavy.
-angle: Contrast complexity with a simpler app promise.
-audience_takeaway: Simplicity increases consistency.
-cta_target: {cta}
-asset_type: carousel
-
-3. funnel_stage: proof
-title: What {inputs["app_name"]} Actually Helps You Do
-platform: TikTok
-hook: This is how we are turning goals into daily actions.
-angle: Introduce the app outcome instead of a feature dump.
-audience_takeaway: The product is built around daily execution.
-cta_target: {cta}
-asset_type: faceless explainer
-
-4. funnel_stage: consideration
-title: Build In Public Update
-platform: Instagram
-hook: We are building the app we wish existed for consistency.
-angle: Share progress and decisions behind the product.
-audience_takeaway: The brand is thoughtful and credible.
-cta_target: {cta}
-asset_type: reel
-
-5. funnel_stage: conversion
-title: Join Before Launch
-platform: TikTok
-hook: If you want first access, now is the time.
-angle: Push urgency around prelaunch access.
-audience_takeaway: Early users get the earliest value.
-cta_target: {cta}
-asset_type: faceless CTA reel
-"""
+    lines = ["# Content Backlog", ""]
+    for index, stage in enumerate(_distribute_stages(batch_size), start=1):
+        platform = "TikTok" if index % 2 else "Instagram"
+        lines.extend(
+            [
+                f"{index}. funnel_stage: {stage}",
+                f"title: {stage_titles[stage]} #{index}",
+                f"platform: {platform}",
+                f"hook: {stage_hooks[stage]}",
+                f"angle: {stage_angles[stage]}",
+                f"audience_takeaway: {stage_takeaways[stage]}",
+                f"cta_target: {cta}",
+                f"asset_type: {stage_assets[stage]}",
+                "",
+            ]
+        )
+    return "\n".join(lines)
 
 
 def build_mock_drafts(inputs: dict[str, str]) -> str:
     cta = inputs["cta_target"]
-    return f"""
-# Content Drafts
+    draft_batch_size = int(inputs["draft_batch_size"])
+    lines = ["# Content Draft Pack", ""]
 
-## Draft 1
-platform: TikTok
-hook: Most people do not have a motivation problem. They have a system problem.
-short_script: You keep setting goals, getting inspired, and then falling off because your plan is too vague. We are building {inputs["app_name"]} to make daily action easier.
-on_screen_text: Goals fail when the system is unclear
-cta: {cta}
+    for index, stage in enumerate(_distribute_stages(draft_batch_size), start=1):
+        platform = "TikTok" if index % 2 else "Instagram"
+        lines.append(f"## Draft {index}")
+        lines.append(f"platform: {platform}")
+        lines.append(f"funnel_stage: {stage}")
+        if platform == "TikTok":
+            lines.extend(
+                [
+                    "hook: Most people do not have a motivation problem. They have a system problem.",
+                    (
+                        f"short_script: {inputs['app_name']} is for people who want lighter daily systems "
+                        "and more consistent action without bloated productivity overhead."
+                    ),
+                    "on_screen_text: clearer systems create better follow-through",
+                    f"cta: {cta}",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    (
+                        "caption: Most productivity tools overwhelm people before they help them. "
+                        "We are building a cleaner path to consistency."
+                    ),
+                    "reel_or_carousel_angle: simple before-and-after frame around the problem and outcome",
+                    f"cta: {cta}",
+                ]
+            )
+        lines.append("")
 
-## Draft 2
-platform: Instagram
-caption: Most productivity apps ask you to manage too much. We think consistency should feel lighter, not heavier.
-reel_or_carousel_angle: carousel showing bloated tools vs simple daily system
-cta: {cta}
-
-## Draft 3
-platform: TikTok
-hook: This is how we are turning goals into daily actions.
-short_script: {inputs["app_name"]} is designed for people who want simple daily systems, not another overwhelming dashboard.
-on_screen_text: daily actions > vague goals
-cta: {cta}
-
-## Draft 4
-platform: Instagram
-caption: Build update: we are keeping the product focused on one thing, helping people stay consistent.
-reel_or_carousel_angle: reel with product mockups and value statements
-cta: {cta}
-
-## Draft 5
-platform: TikTok
-hook: If you want first access, now is the time.
-short_script: We are getting closer to launch, and early users will shape what comes next. If the problem sounds familiar, join early.
-on_screen_text: early access opens first
-cta: {cta}
-"""
+    return "\n".join(lines)
 
 
 def build_mock_plan(inputs: dict[str, str]) -> str:
@@ -139,13 +143,13 @@ def build_mock_plan(inputs: dict[str, str]) -> str:
     return f"""
 # Weekly App Launch Plan
 
-| Day | Platform | Funnel Stage | Content Pillar | Post Concept | Asset Type | Production Note | Publish Note | CTA Target |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Monday | TikTok | awareness | problem awareness | Why motivation fails after 3 days | b-roll + text | use high-contrast captions and short cuts | publish in morning search window | {cta} |
-| Tuesday | Instagram | awareness | why current solutions fail | stop using bloated productivity tools | carousel | create 5 slides with one claim each | post as educational carousel | {cta} |
-| Wednesday | TikTok | proof | feature reveal | what the app actually helps you do | faceless explainer | use mockup overlays and before/after framing | pin in profile if strong | {cta} |
-| Thursday | Instagram | consideration | build in public | product update and design decision | reel | use screen recording and motion text | emphasize transparency | {cta} |
-| Friday | TikTok | conversion | waitlist conversion | join before launch | faceless CTA reel | keep under 20 seconds and direct | use strongest CTA of the week | {cta} |
+| Day | Platform | Funnel Stage | Content Pillar | Post Concept | Asset Type | Production Note | Publish Note | CTA Target | Why It Made The Cut |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Monday | TikTok | awareness | problem awareness | Why motivation fails after 3 days | b-roll + text | use high-contrast captions and short cuts | publish in morning search window | {cta} | strong problem-first opener |
+| Tuesday | Instagram | awareness | why current solutions fail | stop using bloated productivity tools | carousel | create 5 slides with one claim each | post as educational carousel | {cta} | clear comparison angle |
+| Wednesday | TikTok | proof | feature reveal | what the app actually helps you do | faceless explainer | use mockup overlays and before/after framing | pin in profile if strong | {cta} | strongest proof slot |
+| Thursday | Instagram | consideration | build in public | product update and design decision | reel | use screen recording and motion text | emphasize transparency | {cta} | trust-building midweek piece |
+| Friday | TikTok | conversion | waitlist conversion | join before launch | faceless CTA reel | keep under 20 seconds and direct | use strongest CTA of the week | {cta} | best end-of-week conversion push |
 """
 
 
@@ -160,34 +164,38 @@ def build_candidate_learnings(inputs: dict[str, str]) -> str:
 """
 
 
-def run_mock_pipeline(inputs: dict[str, str], output_dir: Path) -> None:
-    research = _write(output_dir, "research_brief.md", build_mock_research(inputs))
-    ideas = _write(output_dir, "content_ideas.md", build_mock_ideas(inputs))
-    drafts = _write(output_dir, "content_drafts.md", build_mock_drafts(inputs))
-    plan = _write(output_dir, "weekly_app_launch_plan.md", build_mock_plan(inputs))
-    candidate_learnings = _write(
-        output_dir,
-        "candidate_learnings.md",
-        build_candidate_learnings(inputs),
-    )
-
-    _write(
-        output_dir,
-        "mock_run_summary.md",
-        f"""
+def run_mock_pipeline(inputs: dict[str, str], latest_dir: Path, archive_dir: Path) -> None:
+    research = build_mock_research(inputs)
+    backlog = build_mock_ideas(inputs)
+    drafts = build_mock_drafts(inputs)
+    plan = build_mock_plan(inputs)
+    candidate_learnings = build_candidate_learnings(inputs)
+    summary = f"""
 # Mock Run Summary
 
 - research_brief.md generated
-- content_ideas.md generated
+- content_backlog.md generated
 - content_drafts.md generated
 - weekly_app_launch_plan.md generated
 - candidate_learnings.md generated
 
 ## Notes
 - Research length: {len(research)}
-- Ideas length: {len(ideas)}
+- Backlog length: {len(backlog)}
 - Drafts length: {len(drafts)}
 - Plan length: {len(plan)}
 - Candidate learnings length: {len(candidate_learnings)}
-""",
-    )
+"""
+
+    filenames_to_content = {
+        "research_brief.md": research,
+        "content_backlog.md": backlog,
+        "content_drafts.md": drafts,
+        "weekly_app_launch_plan.md": plan,
+        "candidate_learnings.md": candidate_learnings,
+        "mock_run_summary.md": summary,
+    }
+
+    for filename, content in filenames_to_content.items():
+        _write(latest_dir, filename, content)
+        _write(archive_dir, filename, content)

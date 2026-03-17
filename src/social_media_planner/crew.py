@@ -59,14 +59,16 @@ class SocialMediaPlanner():
     def idea_generation_task(self) -> Task:
         return Task(
             config=self.tasks_config['idea_generation_task'], # type: ignore[index]
-            context=[self.trend_research_task()]
+            context=[self.trend_research_task()],
+            output_file='output/content_backlog.md'
         )
 
     @task
     def writing_task(self) -> Task:
         return Task(
             config=self.tasks_config['writing_task'], # type: ignore[index]
-            context=[self.idea_generation_task()]
+            context=[self.idea_generation_task()],
+            output_file='output/content_drafts.md'
         )
 
     @task

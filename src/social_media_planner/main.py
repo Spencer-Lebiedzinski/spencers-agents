@@ -65,19 +65,29 @@ def build_inputs() -> dict[str, str]:
         ),
         "brand_voice": "clear, sharp, practical, slightly aspirational, and direct",
         "posts_per_week": "5",
+        "batch_size": os.getenv("BATCH_SIZE", "25"),
+        "draft_batch_size": os.getenv("DRAFT_BATCH_SIZE", "12"),
         "current_year": str(datetime.now().year),
         "research_packet": load_research_packet(),
     }
 
 
+def build_output_paths(base_output_dir: Path) -> tuple[Path, Path]:
+    """Return the latest and archive output paths for the current run."""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    latest_dir = base_output_dir / "latest"
+    archive_dir = base_output_dir / "archive" / timestamp
+    return latest_dir, archive_dir
+
+
 def run():
     """Run the workflow in live or mock mode."""
     inputs = build_inputs()
-    output_dir = DEFAULT_OUTPUT_DIR
+    latest_dir, archive_dir = build_output_paths(DEFAULT_OUTPUT_DIR)
 
     try:
         if get_run_mode() == "mock":
-            run_mock_pipeline(inputs, output_dir=output_dir)
+            run_mock_pipeline(inputs, latest_dir, archive_dir)
             return
         SocialMediaPlanner().crew().kickoff(inputs=inputs)
     except Exception as e:
@@ -144,13 +154,16 @@ def run_with_trigger():
         "content_pillars": "",
         "brand_voice": "",
         "posts_per_week": "",
+        "batch_size": "",
+        "draft_batch_size": "",
         "current_year": "",
         "research_packet": "",
     }
 
     try:
         if get_run_mode() == "mock":
-            run_mock_pipeline(inputs, output_dir=DEFAULT_OUTPUT_DIR)
+            latest_dir, archive_dir = build_output_paths(DEFAULT_OUTPUT_DIR)
+            run_mock_pipeline(inputs, latest_dir, archive_dir)
             return None
         result = SocialMediaPlanner().crew().kickoff(inputs=inputs)
         return result

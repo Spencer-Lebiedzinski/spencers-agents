@@ -15,9 +15,9 @@ The system can currently:
 
 1. read a manual app launch research packet
 2. generate a research brief
-3. generate launch-focused social content ideas
-4. generate faceless social drafts
-5. generate a weekly app launch content plan
+3. generate a larger launch-focused content backlog
+4. generate a draft pack from the strongest backlog items
+5. generate a weekly app launch content plan from the best candidates
 6. generate candidate learnings for human review
 
 The system does not yet:
@@ -42,12 +42,16 @@ The system does not yet:
 
 Mock mode writes these files without calling any paid model:
 
-- `output/research_brief.md`
-- `output/content_ideas.md`
-- `output/content_drafts.md`
-- `output/weekly_app_launch_plan.md`
-- `output/candidate_learnings.md`
-- `output/mock_run_summary.md`
+- `output/latest/research_brief.md`
+- `output/latest/content_backlog.md`
+- `output/latest/content_drafts.md`
+- `output/latest/weekly_app_launch_plan.md`
+- `output/latest/candidate_learnings.md`
+- `output/latest/mock_run_summary.md`
+
+Each run also saves an archived copy under:
+
+- `output/archive/<timestamp>/...`
 
 Use this mode to validate structure, prompts, content flow, and file outputs.
 
@@ -56,6 +60,9 @@ Use this mode to validate structure, prompts, content flow, and file outputs.
 Live mode runs the real 4-agent CrewAI workflow and writes:
 
 - `output/weekly_app_launch_plan.md`
+
+Mock mode is archived automatically today. Live mode still writes directly to the
+current output path and can be upgraded to archive in the same pattern next.
 
 It requires a valid API key and provider quota.
 
@@ -67,6 +74,8 @@ Your local `.env` should look like this:
 RUN_MODE=mock
 OPENAI_API_KEY=sk-...
 SOCIAL_MEDIA_RESEARCH_PACKET=knowledge/app_launch_research_packet.md
+BATCH_SIZE=25
+DRAFT_BATCH_SIZE=12
 ```
 
 Recommended workflow:
