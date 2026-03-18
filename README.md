@@ -1,91 +1,100 @@
 # SocialMediaPlanner Crew
 
-This project is now a faceless app-launch content workflow for TikTok and Instagram.
-It supports two modes:
+This project is now a multi-source social research and content-planning workflow for app launches.
+It can collect signals, analyze them, turn them into content, and produce companion media briefs
+plus static image assets.
 
-- `mock`: no paid API calls, deterministic outputs for workflow testing
-- `live`: real CrewAI agents using your configured LLM provider
+It supports two runtime modes:
 
-The current default in `.env.example` is `mock` mode so you can refine the system
-before spending money.
+- `mock`: deterministic outputs for workflow and artifact testing
+- `live`: runs the collection pipeline, CrewAI analysis/planning crew, and image generation
 
 ## Current Scope
 
 The system can currently:
 
-1. read a manual app launch research packet
-2. generate a research brief
-3. generate a larger launch-focused content backlog
-4. generate a draft pack from the strongest backlog items
-5. generate a weekly app launch content plan from the best candidates
-6. generate candidate learnings for human review
+1. collect and normalize source signals from news, Reddit, and X
+2. analyze pain points, competitor mentions, and viral campaign patterns
+3. generate a research pack for content planning
+4. generate a larger launch-focused content backlog plus draft pack
+5. generate a weekly app launch content plan, media pack, and image manifest
+6. write archival mock outputs and timestamped live runs
 
-The system does not yet:
+The system is prepared, but not yet automated, for:
 
-- scrape social platforms automatically
-- score ideas using real performance data
-- post automatically
-- update durable knowledge by itself without review
+- TikTok source collection
+- Instagram source collection
 
-## Files You Will Edit
+## Important Files
 
-- `knowledge/app_launch_research_packet.md`
-- `knowledge/learned_patterns.md`
-- `knowledge/experiment_log.md`
+- `src/social_media_planner/main.py`
+- `src/social_media_planner/research_pipeline.py`
+- `src/social_media_planner/media_pipeline.py`
 - `src/social_media_planner/config/agents.yaml`
 - `src/social_media_planner/config/tasks.yaml`
-- `src/social_media_planner/main.py`
+- `knowledge/app_launch_research_packet.md`
 
-## Modes
+## Output Artifacts
 
-### Mock Mode
+Mock mode writes the latest copy to `output/latest/` and archives the same run to
+`output/archive/<timestamp>/`.
 
-Mock mode writes these files without calling any paid model:
+Live mode writes to `output/runs/<timestamp>/`.
 
-- `output/latest/research_brief.md`
-- `output/latest/content_backlog.md`
-- `output/latest/content_drafts.md`
-- `output/latest/weekly_app_launch_plan.md`
-- `output/latest/candidate_learnings.md`
-- `output/latest/mock_run_summary.md`
+Primary artifacts:
 
-Each run also saves an archived copy under:
+- `research_pack.md`
+- `research_brief.md`
+- `raw_source_dump.json`
+- `normalized_source_dataset.json`
+- `research_report.json`
+- `content_backlog.md`
+- `content_ideas.md`
+- `content_drafts.md`
+- `content_pack.md`
+- `weekly_app_launch_plan.md`
+- `media_pack.md`
+- `generated_image_manifest.json`
+- `images/*.png`
 
-- `output/archive/<timestamp>/...`
+Mock mode also writes:
 
-Use this mode to validate structure, prompts, content flow, and file outputs.
+- `candidate_learnings.md`
+- `mock_run_summary.md`
 
-### Live Mode
+## Environment
 
-Live mode runs the real 4-agent CrewAI workflow and writes:
-
-- `output/weekly_app_launch_plan.md`
-
-Mock mode is archived automatically today. Live mode still writes directly to the
-current output path and can be upgraded to archive in the same pattern next.
-
-It requires a valid API key and provider quota.
-
-## Setup
-
-Your local `.env` should look like this:
+Minimum local config:
 
 ```bash
 RUN_MODE=mock
+PIPELINE_MODE=collect_and_plan
 OPENAI_API_KEY=sk-...
 SOCIAL_MEDIA_RESEARCH_PACKET=knowledge/app_launch_research_packet.md
 BATCH_SIZE=25
 DRAFT_BATCH_SIZE=12
 ```
 
-Recommended workflow:
+Optional collector configuration:
 
-1. keep `RUN_MODE=mock` while refining the system
-2. update the research packet
-3. run the workflow
-4. review `candidate_learnings.md`
-5. copy only reviewed lessons into `knowledge/learned_patterns.md`
-6. switch to `RUN_MODE=live` when you want real model output
+```bash
+SOCIAL_MEDIA_SEED_TOPICS=goal systems,habit consistency,productivity app frustration
+SOCIAL_MEDIA_COMPETITOR_NAMES=Notion,Todoist,Habitica,Motion
+SOCIAL_MEDIA_COMPETITOR_DOMAINS=notion.so,todoist.com,habitica.com,usemotion.com
+SOCIAL_MEDIA_SUBREDDITS=productivity,selfimprovement,sideproject,Entrepreneur
+SOCIAL_MEDIA_X_KEYWORDS=build in public,habit app,productivity system
+SOCIAL_MEDIA_X_ACCOUNTS=
+SOCIAL_MEDIA_TIME_WINDOW_DAYS=7
+SOCIAL_MEDIA_MAX_ITEMS_PER_SOURCE=10
+SOCIAL_MEDIA_X_ENDPOINT=
+SOCIAL_MEDIA_X_API_KEY=
+SOCIAL_MEDIA_EXISTING_RESEARCH_DIR=
+```
+
+`PIPELINE_MODE` supports:
+
+- `collect_and_plan`
+- `plan_from_existing_research`
 
 ## Running
 
@@ -95,7 +104,13 @@ From the project root:
 python -m social_media_planner.main
 ```
 
-## Local Test
+Mock workflow for cheap iteration:
+
+```bash
+RUN_MODE=mock python -m social_media_planner.main
+```
+
+## Tests
 
 ```bash
 python -m unittest discover -s tests

@@ -1,18 +1,30 @@
-trend_research_task:
+research_analysis_task:
   description: >
-    Review the manual research packet for {app_name} and extract the most useful
-    signals for {platforms}. The target user is: {target_user}. The user problem is:
-    {user_problem}. The dream outcome is: {dream_outcome}. The launch stage is:
-    {launch_stage}. The CTA target is: {cta_target}. Use this weekly research packet
-    as your source material:
+    Review the collected multi-source research for {app_name}. The target user is:
+    {target_user}. The user problem is: {user_problem}. The dream outcome is:
+    {dream_outcome}. The launch stage is: {launch_stage}. The CTA target is:
+    {cta_target}. Use only the evidence below.
 
-    {research_packet}
+    Research summary:
+    {research_summary}
+
+    Pain point clusters:
+    {pain_point_clusters}
+
+    Competitor watchlist:
+    {competitor_watchlist}
+
+    Viral campaign examples:
+    {viral_campaign_examples}
+
+    Source digest:
+    {source_digest}
 
     Produce a practical research brief for the current year {current_year}.
   expected_output: >
-    A markdown brief with these sections: audience pains, competitor patterns,
-    hook formulas, objections, content opportunities, and a ranked top 5 list
-    of launch opportunities for this week.
+    A markdown brief with these sections: source-backed audience pains, competitor
+    positioning patterns, viral campaign lessons, objections, content opportunities,
+    and a ranked top 5 list of launch opportunities for this week.
   agent: research_agent
 
 idea_generation_task:
@@ -56,3 +68,18 @@ planning_task:
     day, platform, funnel stage, content pillar, post concept, asset type,
     production note, publish note, CTA target, and a short reason this post made the cut.
   agent: planner_agent
+
+media_planning_task:
+  description: >
+    Build a companion media pack for the scheduled content. Use the ideas, drafts,
+    and weekly plan to specify reel support assets and designed Instagram post assets.
+    Include static visual concepts that could be generated with an image tool.
+  expected_output: >
+    A markdown media pack with these sections:
+    1. reel support assets
+    2. carousel and static post design briefs
+    3. cover-frame concepts
+    4. image-generation prompts
+    For each asset include: title, platform, asset type, visual goal, copy/text overlay,
+    production notes, and image prompt when relevant.
+  agent: media_agent
